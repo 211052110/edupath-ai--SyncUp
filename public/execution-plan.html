@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SyncUp — AI Student Ecosystem | Execution Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+  :root {
+    --navy: #0B1628;
+    --deep: #112040;
+    --blue: #1A3A6B;
+    --accent: #2563EB;
+    --bright: #3B82F6;
+    --teal: #0EA5E9;
+    --gold: #F59E0B;
+    --green: #10B981;
+    --red: #EF4444;
+    --purple: #8B5CF6;
+    --text: #E2E8F0;
+    --muted: #94A3B8;
+    --border: rgba(59,130,246,0.2);
+    --glass: rgba(255,255,255,0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── HERO ─────────────────────────────────────────── */
+  .hero {
+    background: linear-gradient(135deg, #0B1628 0%, #0F2847 50%, #0B1628 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 20%;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(14,165,233,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal);
+    border: 1px solid rgba(14,165,233,0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 800;
+    line-height: 1.15;
+    color: #fff;
+    max-width: 780px;
+    margin-bottom: 12px;
+  }
+  .hero h1 span { color: var(--teal); }
+  .hero-sub {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 600px;
+    margin-bottom: 28px;
+  }
+  .hero-badges {
+    display: flex; flex-wrap: wrap; gap: 10px;
+  }
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 5px 14px;
+    border-radius: 4px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .badge-blue { background: rgba(37,99,235,0.2); color: var(--bright); border: 1px solid rgba(37,99,235,0.3); }
+  .badge-teal { background: rgba(14,165,233,0.15); color: var(--teal); border: 1px solid rgba(14,165,233,0.25); }
+  .badge-gold { background: rgba(245,158,11,0.15); color: var(--gold); border: 1px solid rgba(245,158,11,0.25); }
+  .badge-green { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+  .badge-purple { background: rgba(139,92,246,0.15); color: var(--purple); border: 1px solid rgba(139,92,246,0.25); }
+
+  /* ── LAYOUT ───────────────────────────────────────── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+  .content { padding: 50px 40px; max-width: 1100px; margin: 0 auto; }
+
+  /* ── TOC ──────────────────────────────────────────── */
+  .toc {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 50px;
+  }
+  .toc-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 8px;
+  }
+  .toc-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--muted);
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+  .toc-item:hover { color: var(--teal); background: rgba(14,165,233,0.07); border-color: rgba(14,165,233,0.15); }
+  .toc-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    min-width: 22px;
+  }
+
+  /* ── SECTION HEADINGS ─────────────────────────────── */
+  .section { margin-bottom: 56px; }
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(37,99,235,0.12);
+    border: 1px solid rgba(37,99,235,0.25);
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* ── CARDS ────────────────────────────────────────── */
+  .card {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .card p { color: var(--muted); font-size: 14px; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .card-grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+
+  .card-accent-blue { border-left: 3px solid var(--accent); }
+  .card-accent-teal { border-left: 3px solid var(--teal); }
+  .card-accent-gold { border-left: 3px solid var(--gold); }
+  .card-accent-green { border-left: 3px solid var(--green); }
+  .card-accent-purple { border-left: 3px solid var(--purple); }
+  .card-accent-red { border-left: 3px solid var(--red); }
+
+  /* ── PHASE CARDS ──────────────────────────────────── */
+  .phase {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .phase-header {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .phase-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--accent);
+    min-width: 44px;
+  }
+  .phase-info { flex: 1; }
+  .phase-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .phase-desc { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .phase-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0;
+  }
+  .phase-col {
+    padding: 20px 24px;
+    border-right: 1px solid var(--border);
+  }
+  .phase-col:last-child { border-right: none; }
+  .phase-col-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 12px;
+  }
+  .phase-col ul { list-style: none; padding: 0; }
+  .phase-col ul li {
+    font-size: 13px; color: var(--muted);
+    padding: 4px 0;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .phase-col ul li::before {
+    content: '→';
+    color: var(--accent);
+    font-size: 11px;
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+
+  /* ── CODE BLOCK ───────────────────────────────────── */
+  .code-block {
+    background: #080F1E;
+    border: 1px solid rgba(37,99,235,0.2);
+    border-radius: 8px;
+    padding: 20px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.9;
+    color: #94A3B8;
+    overflow-x: auto;
+    margin: 16px 0;
+  }
+  .code-block .cm { color: #475569; }
+  .code-block .kw { color: var(--teal); }
+  .code-block .st { color: #A3E635; }
+  .code-block .fn { color: var(--gold); }
+  .code-block .nu { color: var(--purple); }
+  .code-block .hl { color: var(--bright); }
+
+  /* ── METRICS TABLE ────────────────────────────────── */
+  .metrics-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin: 16px 0;
+  }
+  .metrics-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .metrics-table td {
+    padding: 12px 16px;
+    color: var(--text);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top;
+  }
+  .metrics-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .tag-pill {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin: 2px 2px 2px 0;
+  }
+
+  /* ── STAT BLOCKS ──────────────────────────────────── */
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; margin: 20px 0; }
+  .stat {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 18px;
+    text-align: center;
+  }
+  .stat-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--teal);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-lbl { font-size: 12px; color: var(--muted); }
+
+  /* ── FLOW ─────────────────────────────────────────── */
+  .flow {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    padding: 16px 20px;
+    background: rgba(37,99,235,0.06);
+    border: 1px solid rgba(37,99,235,0.18);
+    border-radius: 8px;
+    margin: 16px 0;
+  }
+  .flow-step {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--bright);
+    background: rgba(37,99,235,0.12);
+    padding: 5px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(37,99,235,0.2);
+  }
+  .flow-arrow { color: var(--muted); font-size: 14px; }
+
+  /* ── README ───────────────────────────────────────── */
+  .readme {
+    background: #080F1E;
+    border: 1px solid rgba(37,99,235,0.25);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .readme-bar {
+    background: rgba(37,99,235,0.08);
+    border-bottom: 1px solid rgba(37,99,235,0.2);
+    padding: 10px 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .readme-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .readme-filename {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: 6px;
+  }
+  .readme-content {
+    padding: 28px 32px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+    color: #94A3B8;
+    white-space: pre-wrap;
+  }
+  .readme-content .r-h1 { color: #fff; font-size: 17px; font-weight: bold; }
+  .readme-content .r-h2 { color: var(--teal); font-size: 14px; }
+  .readme-content .r-h3 { color: var(--bright); font-size: 13px; }
+  .readme-content .r-badge { color: var(--gold); }
+  .readme-content .r-code { color: #A3E635; background: rgba(163,230,53,0.06); padding: 1px 4px; border-radius: 3px; }
+  .readme-content .r-link { color: var(--teal); text-decoration: underline; }
+  .readme-content .r-em { color: var(--muted); font-style: italic; }
+
+  /* ── RISK TABLE ───────────────────────────────────── */
+  .risk { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .risk-card {
+    border-radius: 10px;
+    padding: 22px 24px;
+  }
+  .risk-card.r1 { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); }
+  .risk-card.r2 { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2); }
+  .risk-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .risk-title.danger { color: var(--red); }
+  .risk-title.safe { color: var(--green); }
+  .risk-item {
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 13px; color: var(--muted); padding: 5px 0;
+  }
+  .risk-icon { flex-shrink: 0; margin-top: 2px; }
+
+  /* ── FOLDER TREE ──────────────────────────────────── */
+  .tree {
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    line-height: 2;
+    color: var(--muted);
+    background: #080F1E;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+  }
+  .tree .dir { color: var(--teal); }
+  .tree .file { color: #94A3B8; }
+  .tree .comment { color: #475569; }
+
+  /* ── FOOTER ───────────────────────────────────────── */
+  .footer {
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+    padding: 28px 40px;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 700px) {
+    .hero, .content { padding: 30px 20px; }
+    .risk { grid-template-columns: 1fr; }
+    .phase-body { grid-template-columns: 1fr; }
+    .phase-col { border-right: none; border-bottom: 1px solid var(--border); }
+    .phase-col:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ HERO ════════════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-tag">Tenzor X 2026 · AI Track · Banking & Lending</div>
+  <h1>AI Unified Student Ecosystem<br><span>Execution & Prototype Plan</span></h1>
+  <p class="hero-sub">A structured build roadmap for Team SyncUp — aligned with Poonawalla Fincorp's AI lending evaluation criteria.</p>
+  <div class="hero-badges">
+    <span class="badge badge-blue">Python · FastAPI</span>
+    <span class="badge badge-teal">XGBoost · GPT-4</span>
+    <span class="badge badge-gold">RAG · NLP</span>
+    <span class="badge badge-green">React · Streamlit</span>
+    <span class="badge badge-purple">AutoML · REST APIs</span>
+  </div>
+</div>
+
+<!-- ══ CONTENT ════════════════════════════════════════════ -->
+<div class="content">
+
+  <!-- TOC -->
+  <nav class="toc">
+    <div class="toc-title">Contents</div>
+    <div class="toc-grid">
+      <a href="#s1" class="toc-item"><span class="toc-num">01</span> Problem Understanding</a>
+      <a href="#s2" class="toc-item"><span class="toc-num">02</span> Solution Overview</a>
+      <a href="#s3" class="toc-item"><span class="toc-num">03</span> Execution Phases</a>
+      <a href="#s4" class="toc-item"><span class="toc-num">04</span> Technical Details</a>
+      <a href="#s5" class="toc-item"><span class="toc-num">05</span> Prototype Plan</a>
+      <a href="#s6" class="toc-item"><span class="toc-num">06</span> Evaluation Metrics</a>
+      <a href="#s7" class="toc-item"><span class="toc-num">07</span> Business Impact</a>
+      <a href="#s8" class="toc-item"><span class="toc-num">08</span> Risks & Enhancements</a>
+      <a href="#s9" class="toc-item"><span class="toc-num">09</span> README.md</a>
+    </div>
+  </nav>
+
+
+  <!-- ══ S1: PROBLEM ════════════════════════════════════ -->
+  <section class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Problem Understanding</h2>
+    </div>
+
+    <div class="card card-accent-red">
+      <div class="card-title">Core Problem Statement</div>
+      <p>Students pursuing higher education abroad face a deeply fragmented decision-making process spanning university selection, loan eligibility, ROI forecasting, visa preparation, and job market research — all spread across disconnected platforms. This cognitive overload causes poor financial decisions, missed deadlines, and high loan rejection rates. Banks like Poonawalla Fincorp, in turn, struggle with traditional collateral-only scoring models that ignore a student's actual career potential, leading to both rejections of creditworthy applicants and approvals of risky ones.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card card-accent-blue">
+        <div class="card-title">Business Context for Finance</div>
+        <p>The global student loan market is valued at $2.7T. Poonawalla Fincorp targets this segment with education NBFCs, requiring AI-powered pre-qualification to reduce NPAs while growing disbursals. Our platform generates an AI Profile Strength Score that maps directly to loan approval probability bands used by NBFCs — making it directly integration-ready.</p>
+      </div>
+      <div class="card card-accent-gold">
+        <div class="card-title">Key Challenges</div>
+        <p>Heterogeneous data sources (GPA, job APIs, visa transcripts, salary surveys). Cold-start for new applicants with no credit history. LLM hallucination in visa simulation. Integration complexity with live banking APIs. Regulatory compliance (GDPR, RBI data localisation). Prediction uncertainty in salary regression.</p>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="stat-val">78%</div><div class="stat-lbl">Students unsure of career outcome post-MS</div></div>
+      <div class="stat"><div class="stat-val">65%</div><div class="stat-lbl">Confused by education loan process</div></div>
+      <div class="stat"><div class="stat-val">72%</div><div class="stat-lbl">Don't know ROI of their chosen degree</div></div>
+      <div class="stat"><div class="stat-val">40%</div><div class="stat-lbl">First-attempt visa rejection rate (India)</div></div>
+      <div class="stat"><div class="stat-val">$2.7T</div><div class="stat-lbl">Global student loan market TAM</div></div>
+      <div class="stat"><div class="stat-val">40M+</div><div class="stat-lbl">Study-abroad aspirants globally</div></div>
+    </div>
+  </section>
+
+
+  <!-- ══ S2: SOLUTION ════════════════════════════════════ -->
+  <section class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Proposed Solution Overview</h2>
+    </div>
+
+    <div class="card">
+      <div class="card-title">High-Level Architecture</div>
+      <div class="flow">
+        <span class="flow-step">Student Profile Input</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">AI Analysis Layer</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">Multi-Model Prediction</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">Unified Decision Dashboard</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">Bank API Pre-Qualification</span>
+      </div>
+      <p style="margin-top:14px;">Five core AI engines — Career Simulator, ROI Predictor, Loan Scoring, Visa Simulator, Job Market Intelligence — are unified under a single FastAPI backend with a RAG pipeline for personalised Q&amp;A and AutoML for loan scoring. A React/Streamlit frontend exposes these to the student while a separate API endpoint exposes the loan score to banking partners.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card card-accent-teal">
+        <div class="card-title">🧠 AI Digital Twin</div>
+        <p>Each student gets a virtual replica of their academic &amp; financial future. Profile data drives a Monte Carlo simulation + ML regression to output career paths, ROI bands, and loan approval probability before any real-world commitment.</p>
+      </div>
+      <div class="card card-accent-purple">
+        <div class="card-title">💬 LLM Visa Simulator</div>
+        <p>GPT-4 plays the visa officer role in a multi-turn structured conversation. A rule-based scoring engine evaluates answers across 5 dimensions and outputs a Visa Success Probability with targeted improvement tips.</p>
+      </div>
+      <div class="card card-accent-green">
+        <div class="card-title">📊 Loan Scoring Engine</div>
+        <p>Gradient-boosted classifier trained on anonymised NBFC loan approval data. Outputs a 0–100 Profile Strength Score that maps to bank approval probability bands — replacing collateral-only models with career-aware AI scoring.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══ S3: EXECUTION PHASES ════════════════════════════ -->
+  <section class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Execution Plan — Phase by Phase</h2>
+    </div>
+
+    <!-- Phase 1 -->
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num">P1</div>
+        <div class="phase-info">
+          <div class="phase-name">Research & Data Understanding</div>
+          <div class="phase-desc">Define data requirements, API landscape, and ML problem framing</div>
+        </div>
+        <span class="badge badge-blue">Days 1–2</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-col">
+          <div class="phase-col-title">Objectives</div>
+          <ul>
+            <li>Map all 6 feature modules to data sources</li>
+            <li>Define ML problem type per module (regression / classification / NLP)</li>
+            <li>Identify open salary &amp; job datasets (Kaggle, O*NET, LinkedIn)</li>
+            <li>Study Poonawalla Fincorp's NBFC lending criteria</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Tools & Tech</div>
+          <ul>
+            <li>Kaggle Datasets (salary, loan approval)</li>
+            <li>World Bank API (cost of living)</li>
+            <li>O*NET / BLS Occupational Data</li>
+            <li>QS Rankings public data</li>
+            <li>Numbeo API (cost indices)</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Expected Output</div>
+          <ul>
+            <li>Data source inventory document</li>
+            <li>Feature schema for all 6 modules</li>
+            <li>ML problem definition per module</li>
+            <li>System architecture diagram</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num">P2</div>
+        <div class="phase-info">
+          <div class="phase-name">Data Collection & Dataset Strategy</div>
+          <div class="phase-desc">Assemble training datasets for all ML models</div>
+        </div>
+        <span class="badge badge-teal">Days 2–4</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-col">
+          <div class="phase-col-title">Objectives</div>
+          <ul>
+            <li>Collect 50K+ salary records by country/field/level</li>
+            <li>Source education loan approval dataset (Kaggle)</li>
+            <li>Compile job postings dataset by country/skill</li>
+            <li>Gather university ranking + tuition fee data</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Tools & Tech</div>
+          <ul>
+            <li>Python: requests, BeautifulSoup, pandas</li>
+            <li>Kaggle API: education loan dataset</li>
+            <li>Glassdoor / Payscale public salary CSV</li>
+            <li>Static university ranking CSV (QS)</li>
+            <li>SQLite / CSV for local storage</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Expected Output</div>
+          <ul>
+            <li><code>salary_data.csv</code> (50K+ rows)</li>
+            <li><code>loan_approval.csv</code> (labeled)</li>
+            <li><code>job_demand.csv</code> per country/field</li>
+            <li><code>universities.csv</code> with rank + fees</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num">P3</div>
+        <div class="phase-info">
+          <div class="phase-name">Data Preprocessing & Feature Engineering</div>
+          <div class="phase-desc">Clean, encode, and enrich data for ML pipelines</div>
+        </div>
+        <span class="badge badge-gold">Days 4–6</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-col">
+          <div class="phase-col-title">Objectives</div>
+          <ul>
+            <li>Normalize salaries to USD PPP-adjusted</li>
+            <li>Engineer Loan-to-Income Ratio feature</li>
+            <li>Create Career Demand Index from job postings</li>
+            <li>Encode categorical: country, field, university tier</li>
+            <li>Build ROI formula pipeline</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Tools & Tech</div>
+          <ul>
+            <li>pandas, numpy, scikit-learn</li>
+            <li>LabelEncoder / OrdinalEncoder</li>
+            <li>StandardScaler for regression inputs</li>
+            <li>SMOTE for class imbalance (loan approval)</li>
+            <li>Feature importance: SHAP library</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Expected Output</div>
+          <ul>
+            <li>Cleaned, feature-engineered DataFrames</li>
+            <li>Train/val/test splits per model</li>
+            <li>EDA notebook with key insights</li>
+            <li>Feature importance plots (SHAP)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 4 -->
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num">P4</div>
+        <div class="phase-info">
+          <div class="phase-name">Model Selection & Training</div>
+          <div class="phase-desc">Train and evaluate all AI/ML models for each feature module</div>
+        </div>
+        <span class="badge badge-purple">Days 6–10</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-col">
+          <div class="phase-col-title">Models per Module</div>
+          <ul>
+            <li><strong style="color:#fff">ROI Engine:</strong> XGBoost Regressor</li>
+            <li><strong style="color:#fff">Loan Scoring:</strong> GradientBoostingClassifier</li>
+            <li><strong style="color:#fff">Career Paths:</strong> Random Forest + Monte Carlo</li>
+            <li><strong style="color:#fff">Skill Gap:</strong> NLP TF-IDF cosine similarity</li>
+            <li><strong style="color:#fff">Visa Scoring:</strong> Rule-based + GPT-4</li>
+            <li><strong style="color:#fff">Job Intel:</strong> Ranking algorithm + weighted scoring</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Tools & Tech</div>
+          <ul>
+            <li>scikit-learn, XGBoost, LightGBM</li>
+            <li>SHAP for explainability</li>
+            <li>OpenAI GPT-4 API (visa LLM)</li>
+            <li>LangChain for RAG pipeline</li>
+            <li>FAISS for vector similarity search</li>
+            <li>Optuna for hyperparameter tuning</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Expected Output</div>
+          <ul>
+            <li>Trained model .pkl files (joblib)</li>
+            <li>Evaluation reports per model</li>
+            <li>SHAP explanation plots</li>
+            <li>RAG index for university Q&amp;A</li>
+            <li>Baseline accuracy benchmarks</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 5 -->
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num">P5</div>
+        <div class="phase-info">
+          <div class="phase-name">Backend / API Development</div>
+          <div class="phase-desc">Expose all ML models as REST API endpoints via FastAPI</div>
+        </div>
+        <span class="badge badge-green">Days 10–14</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-col">
+          <div class="phase-col-title">Endpoints to Build</div>
+          <ul>
+            <li><code>/api/career-sim</code> — Career + ROI simulation</li>
+            <li><code>/api/loan-score</code> — Profile Strength Score</li>
+            <li><code>/api/visa-chat</code> — GPT-4 visa simulator</li>
+            <li><code>/api/job-intel</code> — Placement probability</li>
+            <li><code>/api/skill-gap</code> — Skill coverage + roadmap</li>
+            <li><code>/api/university-qa</code> — RAG-based Q&amp;A</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Tools & Tech</div>
+          <ul>
+            <li>FastAPI + Uvicorn</li>
+            <li>Pydantic for request validation</li>
+            <li>joblib for model loading</li>
+            <li>LangChain + OpenAI for LLM routes</li>
+            <li>Redis for response caching</li>
+            <li>SQLite / PostgreSQL for user profiles</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Expected Output</div>
+          <ul>
+            <li>FastAPI app with 6+ endpoints</li>
+            <li>Swagger docs auto-generated</li>
+            <li>Postman test collection</li>
+            <li>Response time &lt; 2s for all non-LLM calls</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 6 -->
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num">P6</div>
+        <div class="phase-info">
+          <div class="phase-name">Frontend Development</div>
+          <div class="phase-desc">Build an interactive demo dashboard — dual track: Streamlit (quick) + React (polished)</div>
+        </div>
+        <span class="badge badge-blue">Days 14–18</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-col">
+          <div class="phase-col-title">Pages / Views</div>
+          <ul>
+            <li>Student Profile Input Form</li>
+            <li>Career Digital Twin Dashboard</li>
+            <li>ROI + Salary Comparison View</li>
+            <li>Loan Score Card with SHAP explanations</li>
+            <li>Visa Simulation Chat Interface</li>
+            <li>Job Market Intelligence Map</li>
+            <li>Skill Gap Radar + Learning Roadmap</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Tools & Tech</div>
+          <ul>
+            <li>Streamlit (primary demo — fastest)</li>
+            <li>React + TailwindCSS (polished version)</li>
+            <li>Recharts / Plotly for data visualisation</li>
+            <li>Axios for API calls</li>
+            <li>st.chat_message for visa simulator UI</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Expected Output</div>
+          <ul>
+            <li>Fully interactive Streamlit app</li>
+            <li>Live loan score card with AI insights</li>
+            <li>Career comparison across 3 countries</li>
+            <li>Visa chat demo (5-question flow)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 7 -->
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num">P7</div>
+        <div class="phase-info">
+          <div class="phase-name">Integration & Testing</div>
+          <div class="phase-desc">Connect frontend ↔ backend ↔ models; end-to-end validation</div>
+        </div>
+        <span class="badge badge-gold">Days 18–21</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-col">
+          <div class="phase-col-title">Objectives</div>
+          <ul>
+            <li>Connect all Streamlit widgets to FastAPI endpoints</li>
+            <li>Test full student journey end-to-end</li>
+            <li>Validate loan score against known test cases</li>
+            <li>Stress test LLM visa chat for hallucinations</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Tools & Tech</div>
+          <ul>
+            <li>pytest for unit + integration tests</li>
+            <li>Postman / HTTPie for API testing</li>
+            <li>Locust for load testing</li>
+            <li>LangChain output parsers for LLM validation</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Expected Output</div>
+          <ul>
+            <li>Passing test suite (&gt;80% coverage)</li>
+            <li>Integration test report</li>
+            <li>Identified edge cases documented</li>
+            <li>Performance benchmarks logged</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 8 -->
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num">P8</div>
+        <div class="phase-info">
+          <div class="phase-name">Optimisation, Demo Prep & Deployment</div>
+          <div class="phase-desc">Polish, deploy, and prepare for hackathon evaluation</div>
+        </div>
+        <span class="badge badge-green">Days 21–25</span>
+      </div>
+      <div class="phase-body">
+        <div class="phase-col">
+          <div class="phase-col-title">Objectives</div>
+          <ul>
+            <li>Deploy to Streamlit Cloud / Render / Railway</li>
+            <li>Prepare 3-minute live demo script</li>
+            <li>Create GitHub repo with clean README</li>
+            <li>Record backup demo video (in case of live issues)</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Tools & Tech</div>
+          <ul>
+            <li>Streamlit Cloud (free tier deploy)</li>
+            <li>Docker + docker-compose for backend</li>
+            <li>GitHub Actions for CI pipeline</li>
+            <li>OBS Studio / Loom for demo recording</li>
+          </ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-title">Expected Output</div>
+          <ul>
+            <li>Live public URL for evaluators</li>
+            <li>GitHub repo with all code + README</li>
+            <li>Demo video (3–5 minutes)</li>
+            <li>Updated presentation deck</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ══ S4: TECHNICAL DETAILS ══════════════════════════ -->
+  <section class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Technical Implementation Details</h2>
+    </div>
+
+    <div class="card-grid">
+      <div class="card card-accent-blue">
+        <div class="card-title">Loan Scoring Model</div>
+        <p><strong style="color:var(--teal)">Algorithm:</strong> GradientBoostingClassifier (sklearn) or XGBoost. Features: GPA score, University QS Rank tier, Career Demand Index (job postings volume), ML-predicted Year-1 salary, country risk score, Loan-to-Expected-Income ratio. Output: 0–100 Profile Strength Score → mapped to approval probability bands.</p>
+      </div>
+      <div class="card card-accent-teal">
+        <div class="card-title">ROI Prediction Engine</div>
+        <p><strong style="color:var(--teal)">Algorithm:</strong> XGBoost Regressor trained on 50K+ salary records. Predicts Year-1 and Year-5 salaries for each degree × country combination. ROI = [(Projected 5-yr Net Income − Total Education Cost) / Total Education Cost] × 100. Monte Carlo adds ±15% uncertainty bands.</p>
+      </div>
+      <div class="card card-accent-purple">
+        <div class="card-title">Visa Simulator (LLM)</div>
+        <p><strong style="color:var(--teal)">Architecture:</strong> GPT-4 system-prompted as visa officer with structured multi-turn conversation. After 5–7 exchanges, a deterministic rule-based scoring engine evaluates across 5 dimensions. Outputs Visa Success Probability + per-dimension improvement tips. Uses LangChain ConversationChain with memory.</p>
+      </div>
+      <div class="card card-accent-gold">
+        <div class="card-title">RAG University Q&A</div>
+        <p><strong style="color:var(--teal)">Architecture:</strong> University data (fees, rankings, courses, deadlines) chunked and embedded via OpenAI Ada-002 embeddings. FAISS vector store for retrieval. LangChain RetrievalQA chain for answer generation. Ensures factual, source-grounded responses with no hallucination risk.</p>
+      </div>
+      <div class="card card-accent-green">
+        <div class="card-title">Skill Gap Engine</div>
+        <p><strong style="color:var(--teal)">Architecture:</strong> NLP parses job descriptions using spaCy named entity extraction. TF-IDF vectorisation of required vs. declared skills. Cosine similarity produces per-skill coverage %. Gap matrix feeds into personalised roadmap generation via GPT-4 prompt with structured JSON output.</p>
+      </div>
+      <div class="card card-accent-red">
+        <div class="card-title">Tech Stack Summary</div>
+        <p><strong style="color:var(--teal)">Backend:</strong> Python 3.11, FastAPI, joblib, scikit-learn, XGBoost, LangChain, OpenAI SDK, FAISS, spaCy, Redis. <strong style="color:var(--teal)">Frontend:</strong> Streamlit (primary), React + Tailwind (extended). <strong style="color:var(--teal)">Infra:</strong> Docker, GitHub Actions, Streamlit Cloud / Render.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:8px;">
+      <div class="card-title">System Data Flow</div>
+      <div class="flow" style="flex-direction:column; align-items:flex-start; gap:6px;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="flow-step">User inputs profile</span><span class="flow-arrow">→</span>
+          <span class="flow-step">FastAPI validates (Pydantic)</span><span class="flow-arrow">→</span>
+          <span class="flow-step">ML models loaded via joblib</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Predictions generated</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="flow-step">LLM routes → LangChain → OpenAI API</span><span class="flow-arrow">→</span>
+          <span class="flow-step">RAG retrieves context from FAISS</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Response assembled</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="flow-step">All results → Unified JSON response</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Streamlit dashboard renders cards, charts, chat</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══ S5: PROTOTYPE PLAN ══════════════════════════════ -->
+  <section class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Prototype Plan</h2>
+    </div>
+
+    <div class="card card-accent-teal" style="margin-bottom:20px;">
+      <div class="card-title">What Will Be Built for GitHub Submission</div>
+      <p>A fully functional end-to-end prototype with a Streamlit frontend, FastAPI backend, pre-trained ML models, and LLM integration. The prototype demonstrates all 6 features using a single student profile input flow, producing a unified "Dream-to-Degree-to-Loan" dashboard that evaluators can interact with live.</p>
+    </div>
+
+    <table class="metrics-table">
+      <thead>
+        <tr>
+          <th>Feature Module</th>
+          <th>Demo Behaviour</th>
+          <th>Tech Behind It</th>
+          <th>Wow Factor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>AI Career Simulator</strong></td>
+          <td>Enter GPA + budget → see 3-country career comparison with salary, loan, ROI side-by-side</td>
+          <td>XGBoost Regressor + Monte Carlo</td>
+          <td>Real-time country switching with live ROI recalculation</td>
+        </tr>
+        <tr>
+          <td><strong>ROI + Salary Engine</strong></td>
+          <td>Animated bar chart showing salary growth Year 1→5 with ROI % prominently displayed</td>
+          <td>ML Regression + financial model</td>
+          <td>340% avg ROI headline stat visible immediately</td>
+        </tr>
+        <tr>
+          <td><strong>Loan Score Card</strong></td>
+          <td>Input student profile → get 0–100 Profile Strength Score + SHAP waterfall explanation</td>
+          <td>GradientBoostingClassifier + SHAP</td>
+          <td>Explainable AI — shows exactly which factors help/hurt loan chances</td>
+        </tr>
+        <tr>
+          <td><strong>Visa Simulator</strong></td>
+          <td>5-turn mock visa interview chat → Visa Success Score with per-dimension breakdown</td>
+          <td>GPT-4 + LangChain + rule engine</td>
+          <td>Feels like a real visa interview; immediate improvement tips</td>
+        </tr>
+        <tr>
+          <td><strong>Job Market Intel</strong></td>
+          <td>Placement probability % per country with trend indicator (↑ Growing / → Stable)</td>
+          <td>Weighted scoring on job demand data</td>
+          <td>Country comparison with hiring velocity signal</td>
+        </tr>
+        <tr>
+          <td><strong>Skill Gap Analyzer</strong></td>
+          <td>Paste LinkedIn skills → see radar chart of coverage % + priority learning roadmap</td>
+          <td>spaCy NLP + cosine similarity + GPT-4</td>
+          <td>Personalised roadmap output in seconds</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="card card-accent-gold">
+      <div class="card-title">Demo Script (3 minutes)</div>
+      <p><strong style="color:var(--gold)">0:00–0:30</strong> — Open prototype, enter a sample student profile (Rahul, GPA 3.8, Computer Science, Budget $50K, targeting AI/ML). <strong style="color:var(--gold)">0:30–1:00</strong> — Show Career Simulator: 3-country dashboard appears — USA (ROI 267%), Germany (ROI 583%), India (ROI 139%). <strong style="color:var(--gold)">1:00–1:45</strong> — Show Loan Score Card: Profile Strength 91/100 — "HIGH APPROVAL PROBABILITY" with SHAP chart. <strong style="color:var(--gold)">1:45–2:30</strong> — Run Visa Simulator: 3-turn conversation, Visa Success Score 86% appears. <strong style="color:var(--gold)">2:30–3:00</strong> — Show Skill Gap radar, highlight top 3 priority skills, conclude with business pitch tie-in to Poonawalla Fincorp.</p>
+    </div>
+  </section>
+
+
+  <!-- ══ S6: METRICS ══════════════════════════════════════ -->
+  <section class="section" id="s6">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2 class="section-title">Evaluation Metrics</h2>
+    </div>
+
+    <table class="metrics-table">
+      <thead>
+        <tr><th>Module</th><th>Metric</th><th>Target</th><th>Category</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Loan Scoring</td>
+          <td>AUC-ROC, Precision, Recall, F1</td>
+          <td>AUC &gt; 0.85, F1 &gt; 0.80</td>
+          <td><span class="tag-pill badge-blue">Model</span></td>
+        </tr>
+        <tr>
+          <td>Salary Prediction</td>
+          <td>RMSE, MAE, R² Score</td>
+          <td>R² &gt; 0.78, RMSE &lt; $8K</td>
+          <td><span class="tag-pill badge-blue">Model</span></td>
+        </tr>
+        <tr>
+          <td>Visa Scoring</td>
+          <td>Human eval alignment rate</td>
+          <td>&gt;75% match with expected outcome</td>
+          <td><span class="tag-pill badge-purple">LLM Eval</span></td>
+        </tr>
+        <tr>
+          <td>Skill Gap</td>
+          <td>Skill match accuracy vs. ground truth JDs</td>
+          <td>&gt;80% precision</td>
+          <td><span class="tag-pill badge-blue">Model</span></td>
+        </tr>
+        <tr>
+          <td>API Performance</td>
+          <td>P95 response time</td>
+          <td>&lt;2s for ML endpoints, &lt;8s for LLM</td>
+          <td><span class="tag-pill badge-green">System</span></td>
+        </tr>
+        <tr>
+          <td>Loan Rejection Rate</td>
+          <td>vs. traditional scoring baseline</td>
+          <td>28% reduction (as per slides)</td>
+          <td><span class="tag-pill badge-gold">Business</span></td>
+        </tr>
+        <tr>
+          <td>ROI Prediction Accuracy</td>
+          <td>vs. actual graduate salary data (holdout)</td>
+          <td>Within ±18% of actual</td>
+          <td><span class="tag-pill badge-blue">Model</span></td>
+        </tr>
+        <tr>
+          <td>User Decision Quality</td>
+          <td>Simulated: % better country choice vs. no-AI baseline</td>
+          <td>52% improvement (claim)</td>
+          <td><span class="tag-pill badge-gold">Business</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+  <!-- ══ S7: BUSINESS IMPACT ═════════════════════════════ -->
+  <section class="section" id="s7">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2 class="section-title">Business Impact for Poonawalla Fincorp</h2>
+    </div>
+
+    <div class="card-grid">
+      <div class="card card-accent-green">
+        <div class="card-title">🏦 Direct Lending Value</div>
+        <p>The AI Profile Strength Score replaces collateral-only NBFC evaluation with career-potential-aware scoring. This enables Poonawalla Fincorp to approve more creditworthy applicants previously rejected due to lack of collateral, while reducing NPA risk. The 28% reduction in rejection rate directly expands the addressable customer base.</p>
+      </div>
+      <div class="card card-accent-blue">
+        <div class="card-title">📈 Revenue Growth Path</div>
+        <p>Platform generates pre-qualified student loan leads with a complete AI risk profile attached. Reduces underwriting cost and time. Loan origination can integrate via API — students who complete the platform are auto-routed to Poonawalla Fincorp's loan application with their Profile Strength Score pre-filled. Higher approval rates + lower NPA = direct margin improvement.</p>
+      </div>
+      <div class="card card-accent-teal">
+        <div class="card-title">🌍 Scalability</div>
+        <p>The platform is country-agnostic and university-agnostic. Adding a new destination country requires only updating salary and job demand datasets — the ML pipeline is unchanged. SaaS licensing to other NBFCs, edtech platforms, or student consultancies is an immediate revenue stream. The $2.7T market and 40M+ student cohort represent massive scale potential.</p>
+      </div>
+      <div class="card card-accent-gold">
+        <div class="card-title">🔗 Integration-Ready Architecture</div>
+        <p>The FastAPI backend exposes a <code>/api/loan-score</code> endpoint that returns a standardised JSON payload — directly consumable by Poonawalla Fincorp's existing loan origination system. No architectural overhaul needed on their end. The explainable AI output (SHAP) satisfies RBI's requirement for explainability in AI-based lending decisions.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══ S8: RISKS ════════════════════════════════════════ -->
+  <section class="section" id="s8">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2 class="section-title">Risks & Future Improvements</h2>
+    </div>
+    <div class="risk">
+      <div class="risk-card r1">
+        <div class="risk-title danger">⚠ Risks & Limitations</div>
+        <div class="risk-item"><span class="risk-icon">🔴</span><span>Large training data dependency — quality of salary prediction tied to dataset recency; stale Glassdoor data degrades accuracy</span></div>
+        <div class="risk-item"><span class="risk-icon">🔴</span><span>LLM hallucination in visa simulator — GPT-4 may generate plausible but factually wrong visa rules; mitigate with RAG over embassy guidelines</span></div>
+        <div class="risk-item"><span class="risk-icon">🟡</span><span>GDPR / RBI data localisation — student financial data must be stored and processed on-prem or in India-region cloud; adds infra complexity</span></div>
+        <div class="risk-item"><span class="risk-icon">🟡</span><span>OpenAI API cost at scale — GPT-4 calls for visa + skill gap at ₹X per query; needs batching / caching strategy beyond 10K users</span></div>
+        <div class="risk-item"><span class="risk-icon">🟡</span><span>Bank API integration resistance — NBFCs may require extensive security audits before exposing loan origination APIs; B2B sales cycle is long</span></div>
+        <div class="risk-item"><span class="risk-icon">🟠</span><span>Prediction uncertainty bands — Monte Carlo salary ranges may be wide for niche fields or emerging markets; uncertainty should be communicated clearly to users</span></div>
+      </div>
+      <div class="risk-card r2">
+        <div class="risk-title safe">✦ Future Enhancements</div>
+        <div class="risk-item"><span class="risk-icon">🟢</span><span>Real-time API ingestion from LinkedIn/Indeed for live job market data (currently static dataset); adds $0 cost with RapidAPI tier</span></div>
+        <div class="risk-item"><span class="risk-icon">🟢</span><span>Fine-tuned open-source LLM (Mistral 7B) to replace GPT-4 for visa simulation — reduces per-query cost 10× while maintaining quality</span></div>
+        <div class="risk-item"><span class="risk-icon">🟢</span><span>Student feedback loop — continuous model retraining as students report actual placement outcomes; improves accuracy over time</span></div>
+        <div class="risk-item"><span class="risk-icon">🟢</span><span>WhatsApp / Telegram bot interface — most Indian students use messaging apps; lower adoption friction than web dashboard</span></div>
+        <div class="risk-item"><span class="risk-icon">🟢</span><span>Scholarship matching engine — extend platform with scholarship database (NLP matching against student profile) to reduce loan size needed</span></div>
+        <div class="risk-item"><span class="risk-icon">🟢</span><span>Multi-language support (Hindi, Tamil, Telugu) — expands TAM beyond English-comfortable segment significantly</span></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══ S9: README ═══════════════════════════════════════ -->
+  <section class="section" id="s9">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <h2 class="section-title">README.md — Complete File</h2>
+    </div>
+
+    <div class="readme">
+      <div class="readme-bar">
+        <div class="readme-dot" style="background:#EF4444"></div>
+        <div class="readme-dot" style="background:#F59E0B"></div>
+        <div class="readme-dot" style="background:#10B981"></div>
+        <span class="readme-filename">README.md</span>
+      </div>
+      <div class="readme-content"><span class="r-h1"># 🎓 AI Unified Student Engagement Ecosystem</span>
+
+<span class="r-badge">![Python](https://img.shields.io/badge/Python-3.11-blue)</span> <span class="r-badge">![FastAPI](https://img.shields.io/badge/FastAPI-0.104-teal)</span> <span class="r-badge">![XGBoost](https://img.shields.io/badge/XGBoost-2.0-orange)</span> <span class="r-badge">![GPT-4](https://img.shields.io/badge/GPT--4-OpenAI-purple)</span> <span class="r-badge">![Streamlit](https://img.shields.io/badge/Streamlit-1.28-red)</span>
+
+<span class="r-em">Tenzor X 2026 National AI Hackathon | AI Track — Banking & Lending | Team: SyncUp</span>
+
+> **From Dream ➜ Degree ➜ Loan — Powered by AI**
+> An end-to-end AI platform that unifies university selection, degree ROI,
+> loan eligibility scoring, visa preparation, and job market intelligence
+> into a single student decision ecosystem — directly integrated with
+> NBFC lending workflows.
+
+---
+
+<span class="r-h2">## 📋 Problem Statement</span>
+
+Students planning higher education abroad face fragmented information
+across 5+ decision points: country, university, course, financing, and
+visa. Each requires weeks of research across disconnected sources.
+The cognitive load causes poor decisions, high loan rejection rates,
+and financial stress.
+
+Traditional NBFC loan scoring ignores career potential entirely,
+using only collateral and co-signer income — resulting in creditworthy
+students being rejected and risky profiles being approved.
+
+**Key Stats:**
+- 78% of students are unsure about their career outcome after MS
+- 65% are confused about the education loan process  
+- 40% of Indian students face first-attempt visa rejection
+- $2.7 Trillion global student loan market opportunity
+
+---
+
+<span class="r-h2">## 💡 Solution</span>
+
+An AI Digital Twin platform that simulates each student's academic
+and financial future BEFORE they commit. Six AI-powered modules:
+
+| # | Module | AI Approach | Key Output |
+|---|--------|-------------|------------|
+| 1 | Career Simulator | XGBoost + Monte Carlo | Salary, ROI, 3-country comparison |
+| 2 | ROI Engine | ML Regression | % return on education investment |
+| 3 | Loan Scoring | GradientBoost Classifier | 0–100 Profile Strength Score |
+| 4 | Visa Simulator | GPT-4 + LangChain | Visa Success Probability % |
+| 5 | Job Market Intel | Ranking Algorithm | Placement Probability per country |
+| 6 | Skill Gap Analyzer | NLP + spaCy + GPT-4 | Skill coverage + learning roadmap |
+
+---
+
+<span class="r-h2">## 🏗 Architecture</span>
+
+<span class="r-code">Student Profile Input</span>
+       ↓
+<span class="r-code">FastAPI Backend (Python 3.11)</span>
+  ├── /api/career-sim    → XGBoost Regressor + Monte Carlo
+  ├── /api/loan-score    → GradientBoosting Classifier + SHAP
+  ├── /api/visa-chat     → GPT-4 via LangChain (ConversationChain)
+  ├── /api/job-intel     → Weighted scoring on job demand dataset
+  ├── /api/skill-gap     → spaCy NLP + cosine similarity + GPT-4
+  └── /api/university-qa → LangChain RAG + FAISS vector store
+       ↓
+<span class="r-code">Streamlit Dashboard</span> (unified decision view)
+       ↓
+<span class="r-code">Bank API Endpoint</span> (/api/loan-score → Poonawalla Fincorp integration)
+
+---
+
+<span class="r-h2">## 📁 Folder Structure</span>
+
+<span class="r-code">syncup-ai-ecosystem/
+├── backend/
+│   ├── main.py                  # FastAPI app entry point
+│   ├── models/
+│   │   ├── loan_scorer.py       # GradientBoosting loan model
+│   │   ├── roi_predictor.py     # XGBoost salary/ROI model
+│   │   ├── career_simulator.py  # Monte Carlo simulation
+│   │   ├── skill_gap.py         # NLP skill matcher
+│   │   └── job_intel.py         # Job demand scoring
+│   ├── llm/
+│   │   ├── visa_simulator.py    # GPT-4 visa chat
+│   │   └── rag_university.py    # LangChain RAG Q&A
+│   ├── data/
+│   │   ├── salary_data.csv
+│   │   ├── loan_approval.csv
+│   │   ├── job_demand.csv
+│   │   └── universities.csv
+│   ├── trained_models/
+│   │   ├── loan_model.pkl
+│   │   └── roi_model.pkl
+│   └── requirements.txt
+├── frontend/
+│   ├── app.py                   # Streamlit main app
+│   ├── pages/
+│   │   ├── career_sim.py
+│   │   ├── loan_score.py
+│   │   ├── visa_chat.py
+│   │   ├── job_intel.py
+│   │   └── skill_gap.py
+│   └── components/
+│       └── charts.py
+├── notebooks/
+│   ├── 01_eda.ipynb
+│   ├── 02_loan_model.ipynb
+│   ├── 03_roi_model.ipynb
+│   └── 04_skill_gap_nlp.ipynb
+├── tests/
+│   ├── test_loan_scorer.py
+│   ├── test_roi_predictor.py
+│   └── test_api_endpoints.py
+├── docker-compose.yml
+├── Dockerfile
+└── README.md</span>
+
+---
+
+<span class="r-h2">## ⚙️ Setup Instructions</span>
+
+<span class="r-h3">Prerequisites</span>
+- Python 3.11+
+- Node.js 18+ (optional, for React frontend)
+- OpenAI API key (for visa simulator + skill gap LLM)
+
+<span class="r-h3">1. Clone the Repository</span>
+<span class="r-code">git clone https://github.com/syncup-team/ai-student-ecosystem
+cd ai-student-ecosystem</span>
+
+<span class="r-h3">2. Install Backend Dependencies</span>
+<span class="r-code">cd backend
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm</span>
+
+<span class="r-h3">3. Set Environment Variables</span>
+<span class="r-code">cp .env.example .env
+# Edit .env and add:
+OPENAI_API_KEY=sk-your-key-here
+ENVIRONMENT=development</span>
+
+<span class="r-h3">4. Train or Load Models</span>
+<span class="r-code">python backend/models/train_all.py
+# OR use pre-trained models in trained_models/</span>
+
+<span class="r-h3">5. Start the Backend</span>
+<span class="r-code">uvicorn backend.main:app --reload --port 8000
+# Swagger docs: http://localhost:8000/docs</span>
+
+<span class="r-h3">6. Start the Frontend</span>
+<span class="r-code">cd frontend
+streamlit run app.py --server.port 8501
+# App: http://localhost:8501</span>
+
+<span class="r-h3">7. Run with Docker (Recommended)</span>
+<span class="r-code">docker-compose up --build
+# Backend: http://localhost:8000
+# Frontend: http://localhost:8501</span>
+
+---
+
+<span class="r-h2">## 🔌 Key API Endpoints</span>
+
+<span class="r-code">POST /api/career-sim</span>
+Body: {"gpa": 3.8, "field": "AI", "budget": 50000, "home_country": "India"}
+Returns: 3-country career comparison with salary, ROI, loan estimates
+
+<span class="r-code">POST /api/loan-score</span>
+Body: {"gpa": 3.8, "university_rank": 45, "field": "AI", "loan_amount": 45000}
+Returns: {"profile_strength": 91, "approval_probability": "HIGH", "shap_values": {...}}
+
+<span class="r-code">POST /api/visa-chat</span>
+Body: {"message": "user answer", "conversation_history": [...], "visa_type": "F1"}
+Returns: {"ai_response": "...", "turn": 3, "score_so_far": {...}}
+
+<span class="r-code">GET /api/job-intel?country=Germany&field=Data+Science</span>
+Returns: {"placement_score": 82, "trend": "growing", "top_skills": [...]}
+
+<span class="r-code">POST /api/skill-gap</span>
+Body: {"user_skills": ["Python", "SQL"], "target_field": "ML Engineer", "target_country": "USA"}
+Returns: {"coverage": {...}, "priority_skills": [...], "roadmap": "..."}
+
+---
+
+<span class="r-h2">## 📊 Phase-Wise Explanation</span>
+
+| Phase | Focus | Duration | Output |
+|-------|-------|----------|--------|
+| P1 | Research & Data Scoping | Days 1–2 | Data inventory, feature schema |
+| P2 | Data Collection | Days 2–4 | Raw CSVs for all models |
+| P3 | Preprocessing & FE | Days 4–6 | Clean DataFrames, EDA notebook |
+| P4 | Model Training | Days 6–10 | .pkl models, eval reports |
+| P5 | Backend API | Days 10–14 | FastAPI with 6 endpoints |
+| P6 | Frontend | Days 14–18 | Streamlit dashboard |
+| P7 | Integration & Testing | Days 18–21 | Test suite, integration report |
+| P8 | Optimise & Deploy | Days 21–25 | Live URL, GitHub repo, demo video |
+
+---
+
+<span class="r-h2">## 🎬 Demo Walkthrough</span>
+
+1. Open the live app at: <span class="r-link">https://syncup-ai-ecosystem.streamlit.app</span>
+2. Enter student profile: GPA 3.8, Field: AI/ML, Budget: $50K, Target: USA/Germany
+3. View Career Digital Twin → 3-country comparison renders with ROI bars
+4. Click "Loan Eligibility" → Profile Strength Score 91/100 with SHAP chart
+5. Start Visa Simulator → 5-turn mock interview → 86% Visa Success
+6. View Skill Gap Radar → see gap in Cloud/AWS → roadmap generated
+7. All features accessible without login for hackathon evaluation
+
+---
+
+<span class="r-h2">## 📈 Business Impact</span>
+
+- **28% reduction** in loan rejection rate vs. traditional NBFC scoring
+- **35% increase** in loan adoption when ROI visibility is shown
+- **41% better** placement outcomes for students using job intel
+- **$2.7T TAM** with direct API integration path for Poonawalla Fincorp
+- Explainable AI output satisfies **RBI guidelines** for AI-based lending
+
+---
+
+<span class="r-h2">## 👥 Team SyncUp</span>
+
+Built for Tenzor X 2026 National AI Hackathon | AI Track — Banking & Lending
+Deadline: 3 May 2026
+
+---
+
+<span class="r-em">© 2026 Team SyncUp. MIT License.</span></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  Team SyncUp &nbsp;·&nbsp; Tenzor X 2026 &nbsp;·&nbsp; AI Track: Banking & Lending &nbsp;·&nbsp; Submission Deadline: 3 May 2026
+</div>
+
+</body>
+</html>

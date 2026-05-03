@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduPath AI — From Dream to Degree</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@700&family=Archivo+Narrow:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--accent:#5B6AF0;--dark:#0A0B14;--white:#ffffff;--font-display:'Antonio',sans-serif;--font-body:'Archivo Narrow',sans-serif}
+html{scroll-behavior:auto}
+body{background:var(--dark);color:var(--white);font-family:var(--font-body);overflow-x:hidden;cursor:none}
+#loader{position:fixed;inset:0;background:var(--dark);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px}
+#loader-brand{font-family:var(--font-display);font-size:clamp(32px,5vw,64px);letter-spacing:-2px;color:var(--white)}
+#loader-brand span{color:var(--accent)}
+#loader-bar-wrap{width:min(400px,80vw);height:2px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+#loader-bar{width:0%;height:100%;background:var(--accent);transition:width .1s linear}
+#loader-pct{font-family:var(--font-display);font-size:14px;letter-spacing:2px;color:rgba(255,255,255,.4)}
+#cursor{position:fixed;top:0;left:0;pointer-events:none;z-index:9999}
+#cursor-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);position:absolute;transform:translate(-50%,-50%)}
+#cursor-ring{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--accent);position:absolute;transform:translate(-50%,-50%);opacity:.6}
+#hero{position:relative;height:800vh}
+#hero-sticky{position:sticky;top:0;height:100vh;overflow:hidden}
+#bg-canvas{position:absolute;inset:0;width:110%;height:110%;left:-5%;top:-5%;filter:blur(28px) saturate(1.4);opacity:.7}
+#fg-canvas{position:absolute;inset:0;width:100%;height:100%}
+#hero-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px;z-index:10;pointer-events:none}
+#hero-headline{font-family:var(--font-display);font-size:clamp(32px,6vw,88px);letter-spacing:-2px;line-height:.85;text-transform:uppercase;margin-bottom:24px;text-shadow:0 2px 40px rgba(0,0,0,.6)}
+#hero-sub{font-family:var(--font-body);font-size:clamp(14px,1.8vw,20px);color:rgba(255,255,255,.7);max-width:560px;line-height:1.6}
+#hero-badge{margin-bottom:24px;display:inline-block;padding:6px 18px;border:1px solid rgba(91,106,240,.4);border-radius:100px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);background:rgba(91,106,240,.1)}
+section.light{background:#fff;color:#0A0B14}
+section.dark-sec{background:var(--dark);color:#fff}
+.container{max-width:1280px;margin:0 auto;padding:0 40px}
+#section-intro{padding:120px 40px;text-align:center;background:#fff;color:#0A0B14}
+#section-intro .eyebrow{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:24px}
+#section-intro h2{font-family:var(--font-display);font-size:clamp(40px,7vw,100px);letter-spacing:-2px;line-height:.88;text-transform:uppercase;margin-bottom:32px;color:#0A0B14}
+#section-intro p{font-size:clamp(15px,1.6vw,19px);max-width:600px;margin:0 auto 48px;color:#555;line-height:1.7}
+.btn-group{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn-primary{padding:16px 36px;background:var(--accent);color:#fff;border:none;border-radius:100px;font-family:var(--font-body);font-size:15px;font-weight:500;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(91,106,240,.4)}
+.btn-outline{padding:16px 36px;background:transparent;color:#0A0B14;border:1.5px solid #0A0B14;border-radius:100px;font-family:var(--font-body);font-size:15px;font-weight:500;cursor:pointer;transition:transform .2s}
+.btn-outline:hover{transform:translateY(-2px)}
+#section-carousel{padding:100px 0;background:#fff;overflow:hidden}
+#section-carousel h2{font-family:var(--font-display);font-size:clamp(32px,5vw,72px);letter-spacing:-2px;text-transform:uppercase;color:#0A0B14;padding:0 40px;margin-bottom:48px}
+.carousel-wrap{display:flex;gap:24px;padding:0 40px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.carousel-wrap::-webkit-scrollbar{display:none}
+.c-card{min-width:320px;background:#0A0B14;border-radius:20px;padding:40px;scroll-snap-align:start;transition:transform .3s;flex-shrink:0}
+.c-card:hover{transform:translateY(-6px)}
+.c-card .label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.c-card h3{font-family:var(--font-display);font-size:32px;letter-spacing:-1px;text-transform:uppercase;color:#fff;margin-bottom:16px;line-height:1}
+.c-card p{font-size:14px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:32px}
+.c-card .c-btn{display:inline-block;padding:10px 24px;border:1px solid rgba(255,255,255,.2);border-radius:100px;font-size:13px;color:#fff;cursor:pointer;transition:background .2s}
+.c-card .c-btn:hover{background:rgba(255,255,255,.1)}
+.carousel-nav{display:flex;gap:12px;padding:32px 40px 0}
+.c-nav-btn{width:48px;height:48px;border-radius:50%;border:1.5px solid #0A0B14;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;transition:background .2s,color .2s}
+.c-nav-btn:hover{background:#0A0B14;color:#fff}
+#section-banner{height:85vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,#0A0B14 0%,#1a1b2e 50%,#0A0B14 100%);position:relative;overflow:hidden}
+#section-banner::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(91,106,240,.2) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%)}
+#section-banner h2{font-family:var(--font-display);font-size:clamp(36px,7vw,96px);letter-spacing:-2px;line-height:.88;text-transform:uppercase;max-width:900px;position:relative;z-index:1}
+#section-banner h2 span{color:var(--accent)}
+#section-grid{padding:100px 40px;background:#fff}
+#section-grid h2{font-family:var(--font-display);font-size:clamp(32px,5vw,72px);letter-spacing:-2px;text-transform:uppercase;color:#0A0B14;margin-bottom:48px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media(max-width:768px){.grid-3{grid-template-columns:1fr}}
+.grid-card{background:#0A0B14;border-radius:20px;overflow:hidden;aspect-ratio:3/4;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:28px}
+.grid-card-bg{position:absolute;inset:0;background:linear-gradient(135deg,#1a1b2e,#0A0B14);z-index:0}
+.grid-card-icon{position:absolute;top:28px;left:28px;width:48px;height:48px;border-radius:12px;background:rgba(91,106,240,.2);border:1px solid rgba(91,106,240,.3);display:flex;align-items:center;justify-content:center;font-size:22px;z-index:1}
+.grid-card h3{font-family:var(--font-display);font-size:28px;letter-spacing:-1px;text-transform:uppercase;color:#fff;position:relative;z-index:1;margin-bottom:16px}
+.grid-pill{display:inline-block;padding:8px 20px;border:1px solid rgba(255,255,255,.2);border-radius:100px;font-size:12px;color:#fff;position:relative;z-index:1;cursor:pointer;transition:background .2s}
+.grid-pill:hover{background:rgba(255,255,255,.1)}
+#section-insights{padding:100px 40px;background:#fff}
+#section-insights .eyebrow{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+#section-insights h2{font-family:var(--font-display);font-size:clamp(32px,5vw,72px);letter-spacing:-2px;text-transform:uppercase;color:#0A0B14;margin-bottom:12px}
+#section-insights .sub{font-size:15px;color:#666;margin-bottom:60px}
+.insights-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+@media(max-width:768px){.insights-grid{grid-template-columns:1fr}}
+.insight-card{background:#0A0B14;border-radius:20px;padding:36px;transition:transform .3s;position:relative;overflow:hidden}
+.insight-card::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(91,106,240,.15),transparent 70%)}
+.insight-card:hover{transform:translateY(-4px)}
+.insight-card .tag{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:block}
+.insight-card .big-num{font-family:var(--font-display);font-size:clamp(48px,6vw,80px);letter-spacing:-2px;color:var(--accent);line-height:1;margin-bottom:8px}
+.insight-card .insight-title{font-family:var(--font-display);font-size:20px;letter-spacing:-0.5px;text-transform:uppercase;color:#fff;margin-bottom:12px}
+.insight-card .insight-body{font-size:14px;color:rgba(255,255,255,.55);line-height:1.7}
+.insight-card .insight-body strong{color:rgba(255,255,255,.9)}
+.marquee-wrap{padding:20px 0;background:#0A0B14;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);overflow:hidden;white-space:nowrap}
+.marquee-inner{display:inline-flex;animation:marquee 20s linear infinite}
+.marquee-inner span{font-family:var(--font-display);font-size:clamp(14px,2vw,20px);letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4);padding:0 32px}
+.marquee-inner span.dot{color:var(--accent)}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div id="loader-brand">Edu<span>Path</span> AI</div>
+  <div id="loader-bar-wrap"><div id="loader-bar"></div></div>
+  <div id="loader-pct">0%</div>
+</div>
+
+<div id="cursor"><div id="cursor-ring"></div><div id="cursor-dot"></div></div>
+
+<main>
+  <section id="hero">
+    <div id="hero-sticky">
+      <canvas id="bg-canvas"></canvas>
+      <canvas id="fg-canvas"></canvas>
+      <div id="hero-text">
+        <div id="hero-badge">AI-Powered Education Finance</div>
+        <h1 id="hero-headline">From Dream<br>To Degree<br>To Loan</h1>
+        <p id="hero-sub">Plan your study abroad journey with AI-driven insights, loan eligibility, and ROI predictions.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee-wrap"><div class="marquee-inner">
+    <span>AI Loan Scoring</span><span class="dot">•</span><span>ROI Prediction</span><span class="dot">•</span><span>Visa Success Simulation</span><span class="dot">•</span><span>Career Intelligence</span><span class="dot">•</span>
+    <span>AI Loan Scoring</span><span class="dot">•</span><span>ROI Prediction</span><span class="dot">•</span><span>Visa Success Simulation</span><span class="dot">•</span><span>Career Intelligence</span><span class="dot">•</span>
+  </div></div>
+
+  <section id="section-intro" class="light">
+    <div class="eyebrow reveal">The Intelligent Platform</div>
+    <h2 class="reveal">One Platform.<br>Every Decision.</h2>
+    <p class="reveal">From AI loan scoring to ROI forecasting, visa interview simulation, and career intelligence — EduPath AI gives you every tool to make the right move.</p>
+    <div class="btn-group reveal">
+      <button class="btn-primary">Explore Dashboard</button>
+      <button class="btn-outline">Calculate Your ROI</button>
+    </div>
+  </section>
+
+  <section id="section-carousel" class="light">
+    <h2 class="reveal">What We<br>Offer</h2>
+    <div class="carousel-wrap" id="carousel">
+      <div class="c-card"><div class="label">Feature 01</div><h3>AI Loan Score</h3><p>Get an intelligent eligibility score based on your GPA, budget, country risk, and language proficiency — with real lender recommendations.</p><div class="c-btn">Learn More →</div></div>
+      <div class="c-card"><div class="label">Feature 02</div><h3>ROI Calculator</h3><p>See your 10-year earnings projection vs total investment, with break-even timelines and country-specific comparisons.</p><div class="c-btn">Learn More →</div></div>
+      <div class="c-card"><div class="label">Feature 03</div><h3>Visa Simulator</h3><p>Practice with an AI visa officer that scores your answers, detects intent, and provides structured feedback on every response.</p><div class="c-btn">Learn More →</div></div>
+      <div class="c-card"><div class="label">Feature 04</div><h3>Career Insights</h3><p>Explore salary benchmarks, skill gap analysis, and trending roles across countries matched to your field of study.</p><div class="c-btn">Learn More →</div></div>
+    </div>
+    <div class="carousel-nav">
+      <button class="c-nav-btn" id="prev">←</button>
+      <button class="c-nav-btn" id="next">→</button>
+    </div>
+  </section>
+
+  <section id="section-banner" class="dark-sec">
+    <h2 class="reveal">Make Smarter Decisions<br>Before You Spend A<br><span>Single Dollar.</span></h2>
+  </section>
+
+  <section id="section-grid" class="light">
+    <h2 class="reveal">The Essentials</h2>
+    <div class="grid-3">
+      <div class="grid-card reveal"><div class="grid-card-bg"></div><div class="grid-card-icon">📊</div><h3>Loan Eligibility</h3><div class="grid-pill">Explore →</div></div>
+      <div class="grid-card reveal"><div class="grid-card-bg"></div><div class="grid-card-icon">📈</div><h3>ROI Forecasting</h3><div class="grid-pill">Explore →</div></div>
+      <div class="grid-card reveal"><div class="grid-card-bg"></div><div class="grid-card-icon">🌐</div><h3>Career Prediction</h3><div class="grid-pill">Explore →</div></div>
+    </div>
+  </section>
+
+  <section id="section-insights" class="light">
+    <div class="eyebrow reveal">Powered By Intelligence</div>
+    <h2 class="reveal">AI Insights For<br>Your Journey</h2>
+    <p class="sub reveal">Real-time outputs generated from your profile — not generic statistics.</p>
+    <div class="insights-grid" id="insights-grid"></div>
+  </section>
+</main>
+
+<script>
+const CONFIG={framePath:"./frames/frame_",frameCount:180,brand:"EduPath AI",headline:"From Dream to Degree to Loan — Powered by AI",accent:"#5B6AF0"};
+
+const PROFILE={gpa:3.6,budget:45000,country:"Germany",field:"Computer Science",workExp:2,englishScore:7.5};
+
+class Cursor{constructor(){this.dot=document.getElementById("cursor-dot");this.ring=document.getElementById("cursor-ring");this.mx=0;this.my=0;this.rx=0;this.ry=0;document.addEventListener("mousemove",e=>{this.mx=e.clientX;this.my=e.clientY;this.dot.style.left=e.clientX+"px";this.dot.style.top=e.clientY+"px"});this._tick()}
+_tick(){this.rx+=(this.mx-this.rx)*.12;this.ry+=(this.my-this.ry)*.12;this.ring.style.left=this.rx+"px";this.ring.style.top=this.ry+"px";requestAnimationFrame(()=>this._tick())}}
+
+class CanvasEngine{constructor(){this.bg=document.getElementById("bg-canvas");this.fg=document.getElementById("fg-canvas");this.bctx=this.bg.getContext("2d");this.fctx=this.fg.getContext("2d");this.frames=[];this.loaded=0;this.resize();window.addEventListener("resize",()=>this.resize())}
+resize(){const w=window.innerWidth,h=window.innerHeight;this.bg.width=Math.round(w*1.1);this.bg.height=Math.round(h*1.1);this.fg.width=w;this.fg.height=h;this.W=w;this.H=h}
+async preload(onProgress){const total=CONFIG.frameCount;const promises=[];for(let i=0;i<total;i++){const img=new Image();img.src=CONFIG.framePath+(String(i+1).padStart(4,"0"))+".jpg";promises.push(new Promise(res=>{img.onload=()=>{this.loaded++;onProgress(this.loaded/total);this.frames.push(img);res()};img.onerror=()=>{this.loaded++;onProgress(this.loaded/total);this.frames.push(null);res()}}))}
+return Promise.all(promises).then(()=>{this.frames.sort((_a,_b)=>0);this._buildFallback(total)})}
+_buildFallback(total){if(this.frames.filter(f=>f&&f.naturalWidth>0).length<5){this.frames=[];for(let i=0;i<total;i++){const c=document.createElement("canvas");c.width=1920;c.height=1080;const cx=c.getContext("2d");const p=i/total;const hue=220+p*60;cx.fillStyle=`hsl(${hue},40%,${6+p*8}%)`;cx.fillRect(0,0,1920,1080);const grad=cx.createRadialGradient(960,540,0,960,540,600);grad.addColorStop(0,`hsla(${hue+30},60%,${30+p*20}%,${.3+p*.3})`);grad.addColorStop(1,"transparent");cx.fillStyle=grad;cx.fillRect(0,0,1920,1080);cx.font="bold 64px Arial";cx.fillStyle=`rgba(255,255,255,${.05+p*.1})`;const labels=["Confusion","University","Costs","AI Analysis","Career","Outcome"];cx.fillText(labels[Math.floor(p*5.99)]||"",860,540);this.frames.push(c)}}}
+draw(progress){const idx=Math.min(Math.floor(progress*(this.frames.length-1)),this.frames.length-1);const frame=this.frames[idx];if(!frame)return;this._drawBg(frame);this._drawFg(frame)}
+_drawBg(frame){const bw=this.bg.width,bh=this.bg.height;this.bctx.drawImage(frame,0,0,bw,bh)}
+_drawFg(frame){const w=this.W,h=this.H;this.fctx.clearRect(0,0,w,h);const fw=frame.width||frame.naturalWidth||1920;const fh=frame.height||frame.naturalHeight||1080;const ratio=Math.min(w/fw,h/fh);const dw=fw*ratio,dh=fh*ratio;const dx=(w-dw)/2,dy=(h-dh)/2;this.fctx.drawImage(frame,dx,dy,dw,dh);const grad=this.fctx.createLinearGradient(0,0,0,h);grad.addColorStop(0,"rgba(10,11,20,0.55)");grad.addColorStop(0.08,"rgba(10,11,20,0)");grad.addColorStop(0.92,"rgba(10,11,20,0)");grad.addColorStop(1,"rgba(10,11,20,0.55)");this.fctx.fillStyle=grad;this.fctx.fillRect(0,0,w,h)}}
+
+class Loader{constructor(engine){this.el=document.getElementById("loader");this.bar=document.getElementById("loader-bar");this.pct=document.getElementById("loader-pct");this.engine=engine}
+async run(){await this.engine.preload(p=>{this.bar.style.width=(p*100)+"%";this.pct.textContent=Math.round(p*100)+"%"});return new Promise(res=>{gsap.to(this.el,{opacity:0,duration:.6,delay:.3,onComplete:()=>{this.el.style.display="none";res()}})})}  }
+
+class Carousel{constructor(){this.wrap=document.getElementById("carousel");this.prev=document.getElementById("prev");this.next=document.getElementById("next");this.idx=0;this.cards=this.wrap.querySelectorAll(".c-card");this.prev.onclick=()=>this._go(-1);this.next.onclick=()=>this._go(1)}
+_go(dir){this.idx=Math.max(0,Math.min(this.cards.length-1,this.idx+dir));this.cards[this.idx].scrollIntoView({behavior:"smooth",block:"nearest",inline:"start"})}}
+
+class ScrollController{constructor(engine){this.engine=engine;this.lenis=new Lenis({lerp:.1,smooth:true});gsap.registerPlugin(ScrollTrigger);this.lenis.on("scroll",ScrollTrigger.update);gsap.ticker.add(time=>this.lenis.raf(time*1000));gsap.ticker.lagSmoothing(0);this._heroScroll();this._reveals()}
+_heroScroll(){const hero=document.getElementById("hero");ScrollTrigger.create({trigger:hero,start:"top top",end:"bottom bottom",onUpdate:self=>{this.engine.draw(self.progress)}})}
+_reveals(){document.querySelectorAll(".reveal").forEach(el=>{const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){el.classList.add("visible");obs.unobserve(el)}})},{threshold:.15});obs.observe(el)})}}
+
+class InsightsEngine{constructor(){this.grid=document.getElementById("insights-grid");this._build()}
+_calc(){const p=PROFILE;const germanyROI=2.4+(p.gpa-3.5)*0.3;const usaROI=1+(p.gpa-3.0)*0.4;const roiRatio=(germanyROI/Math.max(usaROI,0.1)).toFixed(1);const approval=Math.min(95,Math.round(50+(p.gpa-2.5)*18+(p.workExp*4)+(p.englishScore-5)*3));const approvalTop=Math.round(100-approval);const savingPct=Math.round(22+((p.budget-30000)/5000)*2);const breakEven=(p.budget/(p.budget*0.18)).toFixed(1);return{roiRatio,approval,approvalTop,savingPct,breakEven}}
+_build(){const c=this._calc();const cards=[{tag:"ROI Analysis",num:c.roiRatio+"×",title:"Germany Advantage",body:`Based on your profile (GPA ${PROFILE.gpa}, budget $${PROFILE.budget.toLocaleString()}), <strong>Germany offers ${c.roiRatio}× better ROI</strong> than USA for ${PROFILE.field} graduates.`},{tag:"Loan Eligibility",num:"Top "+c.approvalTop+"%",title:"Approval Probability",body:`Your combined academic and financial profile places you in the <strong>top ${c.approvalTop}% of applicants</strong> in your category with ${c.approval}% approval likelihood.`},{tag:"Cost Optimization",num:c.savingPct+"%",title:"Potential Savings",body:`Choosing public universities over private in your target region could <strong>reduce your total cost by ${c.savingPct}%</strong>, saving approximately $${Math.round(PROFILE.budget*c.savingPct/100).toLocaleString()}.`},{tag:"Timeline Forecast",num:c.breakEven+" yrs",title:"Break-Even Point",body:`At your projected post-grad salary in <strong>${PROFILE.country}</strong>, you are expected to break even in <strong>${c.breakEven} years</strong> — ahead of the 5-year industry average.`}];
+cards.forEach((d,i)=>{const el=document.createElement("div");el.className="insight-card reveal";el.innerHTML=`<span class="tag">⚡ ${d.tag}</span><div class="big-num">${d.num}</div><div class="insight-title">${d.title}</div><p class="insight-body">${d.body}</p>`;el.style.transitionDelay=(i*0.12)+"s";this.grid.appendChild(el)})}  }
+
+async function init(){const engine=new CanvasEngine();engine.draw(0);const loader=new Loader(engine);await loader.run();new Cursor();new Carousel();new InsightsEngine();new ScrollController(engine)}
+
+init();
+</script>
+</body>
+</html>
