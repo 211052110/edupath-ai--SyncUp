@@ -17,10 +17,10 @@ Indian students planning higher education face **5+ disconnected decision points
 
 | | |
 |---|---|
-| 📊 **78%** | unsure about career outcomes after an MS |
-| 💸 **65%** | confused about the education loan process |
-| 🌍 **72%** | unaware of their chosen degree's real ROI |
-| 🗂️ **3 in 4** | find information too scattered to act on |
+| 📊 **78%** | Unsure about career outcomes after an MS |
+| 💸 **65%** | Confused about the education loan process |
+| 🌍 **72%** | Unaware of their chosen degree's real ROI |
+| 🗂️ **3 in 4** | Find information too scattered to act on |
 
 ---
 
