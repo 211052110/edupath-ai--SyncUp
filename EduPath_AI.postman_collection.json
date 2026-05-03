@@ -1,0 +1,478 @@
+{
+  "info": {
+    "name": "EduPath AI — Full API",
+    "description": "Complete Postman collection for EduPath AI hackathon demo.\n\nSetup:\n1. Set `base_url` variable to `http://localhost:8000` (or deployed URL)\n2. Run `python -m scripts.train_models` once to generate ML models\n3. Start backend: `uvicorn app.main:app --reload`\n\nAll endpoints documented with example requests, expected responses, and edge-case tests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "edupath-ai-hackathon-2024"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string",
+      "description": "Change to deployed URL for production demo"
+    },
+    {
+      "key": "api_v1",
+      "value": "{{base_url}}/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+
+    {
+      "name": "🔍 Health & Status",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/health", "host": ["{{base_url}}"], "path": ["health"] },
+            "description": "Verifies backend is running, Groq key configured, and cache backend status."
+          },
+          "response": [
+            {
+              "name": "200 OK — dev mode",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"status\": \"ok\",\n  \"project\": \"EduPath AI\",\n  \"env\": \"development\",\n  \"groq_key_configured\": true,\n  \"cache\": {\"backend\": \"memory\", \"live_keys\": 4}\n}"
+            }
+          ]
+        },
+        {
+          "name": "Cache Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{api_v1}}/cache/info", "host": ["{{api_v1}}"], "path": ["cache", "info"] },
+            "description": "Returns cache backend type (memory/redis) and live key count."
+          },
+          "response": [
+            {
+              "name": "200 OK — memory backend",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"backend\": \"memory\",\n  \"live_keys\": 12\n}"
+            },
+            {
+              "name": "200 OK — redis backend",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"backend\": \"redis\",\n  \"version\": \"7.2.3\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "OpenAPI Docs (Swagger)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/docs", "host": ["{{base_url}}"], "path": ["docs"] },
+            "description": "Interactive Swagger UI — open in browser."
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🎓 Loan Scoring",
+      "description": "Education loan eligibility scoring using SMOTE + Optuna-tuned XGBoost/LightGBM + SHAP explainability.",
+      "item": [
+        {
+          "name": "Calculate Loan Score — High GPA (Excellent)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/loan/calculate-score", "host": ["{{api_v1}}"], "path": ["loan", "calculate-score"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gpa\": 3.9,\n  \"annual_budget\": 75000,\n  \"target_country\": \"USA\",\n  \"work_experience_years\": 3,\n  \"english_score\": 8.0\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Strong profile — should return Excellent/Low Risk with score 80+."
+          },
+          "response": [
+            {
+              "name": "200 OK — Excellent profile",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"overall_score\": 88,\n  \"classification\": \"Excellent\",\n  \"risk_level\": \"Low Risk\",\n  \"explanation\": \"Your loan score is 88 (Excellent), driven primarily by your strong academic record (GPA 3.9)...\",\n  \"factors\": {\n    \"academic_record\": 97,\n    \"financial_stability\": 93,\n    \"employment_prospects\": 42,\n    \"country_risk\": 92,\n    \"english_proficiency\": 88\n  },\n  \"improvement_suggestions\": [\"Maintain current standings. Applying with a co-signer may unlock lower interest rates.\"],\n  \"recommended_lenders\": [\n    {\"name\": \"Prodigy Finance\", \"interest_rate\": \"10.25%\", \"max_amount\": \"$220,000\", \"processing_time\": \"5-7 days\"}\n  ],\n  \"model_info\": {\"model\": \"XGBoost\", \"cv_auc\": 0.9724, \"xgb_auc\": 0.9724, \"lgb_auc\": 0.9691}\n}"
+            }
+          ]
+        },
+        {
+          "name": "Calculate Loan Score — Low Budget (Poor)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/loan/calculate-score", "host": ["{{api_v1}}"], "path": ["loan", "calculate-score"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gpa\": 2.8,\n  \"annual_budget\": 12000,\n  \"target_country\": \"UK\",\n  \"work_experience_years\": 0,\n  \"english_score\": 5.5\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Weak profile — should return Poor/High Risk with improvement suggestions."
+          }
+        },
+        {
+          "name": "Calculate Loan Score — Germany (Highest ROI)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/loan/calculate-score", "host": ["{{api_v1}}"], "path": ["loan", "calculate-score"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gpa\": 3.5,\n  \"annual_budget\": 15000,\n  \"target_country\": \"Germany\",\n  \"work_experience_years\": 1,\n  \"english_score\": 7.0\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Germany has highest country score (95) — near-zero tuition. Good for demo."
+          }
+        },
+        {
+          "name": "❌ Validation — GPA > 4.0 (422)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/loan/calculate-score", "host": ["{{api_v1}}"], "path": ["loan", "calculate-score"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gpa\": 5.0,\n  \"annual_budget\": 50000,\n  \"target_country\": \"USA\",\n  \"work_experience_years\": 2,\n  \"english_score\": 7.5\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Should return 422 — GPA max is 4.0."
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "📈 ROI Calculator",
+      "description": "10-year ROI projection with XGBoost salary prediction, EMI calculation, and break-even analysis.",
+      "item": [
+        {
+          "name": "Calculate ROI — USA CS (High Cost)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/roi/calculate", "host": ["{{api_v1}}"], "path": ["roi", "calculate"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"duration_years\": 2,\n  \"annual_tuition\": 45000,\n  \"monthly_living_costs\": 1500,\n  \"target_country\": \"USA\",\n  \"field_of_study\": \"Computer Science\",\n  \"expected_salary\": 0\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "expected_salary=0 uses XGBoost model prediction. Should show ~$115K starting salary."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"metrics\": {\n    \"predicted_salary\": 115000,\n    \"total_investment\": 126000,\n    \"ten_year_earnings\": 1382500,\n    \"ten_year_roi_percentage\": 997.2,\n    \"break_even_year\": 3,\n    \"monthly_emi\": 1248.5\n  },\n  \"projection_data\": [\n    {\"year\": \"Y1\", \"salary\": 115000, \"cumulative\": 115000, \"investment\": 126000},\n    {\"year\": \"Y2\", \"salary\": 120750, \"cumulative\": 235750, \"investment\": 126000}\n  ],\n  \"insights\": {\n    \"insight_text\": \"Strong ROI for CS in USA. Break-even in year 3.\",\n    \"comparison\": \"998% ROI over 10 years — top quartile among study destinations.\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Calculate ROI — Germany AI/ML (Best Value)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/roi/calculate", "host": ["{{api_v1}}"], "path": ["roi", "calculate"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"duration_years\": 2,\n  \"annual_tuition\": 500,\n  \"monthly_living_costs\": 1000,\n  \"target_country\": \"Germany\",\n  \"field_of_study\": \"AI / Machine Learning\",\n  \"expected_salary\": 78000\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Germany near-zero tuition → extremely high ROI. Great for judge demo."
+          }
+        },
+        {
+          "name": "❌ Validation — duration_years = 0 (422)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/roi/calculate", "host": ["{{api_v1}}"], "path": ["roi", "calculate"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"duration_years\": 0,\n  \"annual_tuition\": 45000,\n  \"monthly_living_costs\": 1500,\n  \"target_country\": \"USA\",\n  \"field_of_study\": \"Computer Science\",\n  \"expected_salary\": 0\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🚀 Career Simulator",
+      "description": "10-year salary projection + career demand index + skill roadmap. Biggest feature.",
+      "item": [
+        {
+          "name": "Simulate Career — ML Engineer USA (A+ Profile)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/career-sim/simulate", "host": ["{{api_v1}}"], "path": ["career-sim", "simulate"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gpa\": 3.9,\n  \"field_of_study\": \"AI / Machine Learning\",\n  \"target_country\": \"USA\",\n  \"work_experience_years\": 2,\n  \"program_duration_years\": 2,\n  \"annual_tuition_usd\": 45000,\n  \"monthly_living_usd\": 1500,\n  \"target_role\": \"ML Engineer\",\n  \"skills_text\": \"Python, PyTorch, scikit-learn, AWS, Docker\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Should return A+ grade, demand_index 95, $130K starting salary, break-even ~2 years."
+          },
+          "response": [
+            {
+              "name": "200 OK — ML Engineer USA",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"predicted_starting_salary\": 131500,\n  \"salary_at_5yr\": 178900,\n  \"salary_at_10yr\": 243700,\n  \"total_investment\": 126000,\n  \"break_even_years\": 1.0,\n  \"ten_year_net\": 1847600,\n  \"roi_percent\": 1466.3,\n  \"demand_index\": 95,\n  \"career_grade\": \"A+\",\n  \"projections\": [\n    {\"year\": 1, \"salary\": 131500, \"cumulative_earnings\": 131500, \"cumulative_cost\": 126000, \"net_position\": 5500},\n    {\"year\": 2, \"salary\": 142020, \"cumulative_earnings\": 273520, \"cumulative_cost\": 126000, \"net_position\": 147520}\n  ],\n  \"top_skills_to_add\": [\"PyTorch\", \"LLM fine-tuning\", \"MLOps\", \"CUDA\"],\n  \"summary\": \"As a ML Engineer in USA, you're projected to start at $131,500/yr, reaching $178,900 by year 5...\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Simulate Career — Data Scientist Germany (Best ROI)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/career-sim/simulate", "host": ["{{api_v1}}"], "path": ["career-sim", "simulate"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gpa\": 3.5,\n  \"field_of_study\": \"Data Science\",\n  \"target_country\": \"Germany\",\n  \"work_experience_years\": 1,\n  \"program_duration_years\": 2,\n  \"annual_tuition_usd\": 500,\n  \"monthly_living_usd\": 950,\n  \"target_role\": \"Data Scientist\",\n  \"skills_text\": \"Python, R, Tableau, SQL\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Near-zero tuition → massive ROI despite lower salary. Good comparison for judges."
+          }
+        },
+        {
+          "name": "Simulate Career — Software Engineer Canada",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/career-sim/simulate", "host": ["{{api_v1}}"], "path": ["career-sim", "simulate"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gpa\": 3.3,\n  \"field_of_study\": \"Computer Science\",\n  \"target_country\": \"Canada\",\n  \"work_experience_years\": 0,\n  \"program_duration_years\": 2,\n  \"annual_tuition_usd\": 30000,\n  \"monthly_living_usd\": 1200,\n  \"target_role\": \"Software Engineer\",\n  \"skills_text\": \"Java, Spring Boot, Git\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "❌ Validation — GPA > 4.0 (422)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/career-sim/simulate", "host": ["{{api_v1}}"], "path": ["career-sim", "simulate"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gpa\": 5.0,\n  \"field_of_study\": \"CS\",\n  \"target_country\": \"USA\",\n  \"annual_tuition_usd\": 45000\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🤖 Visa Interview Coach",
+      "description": "LangChain + Groq (llama-3.3-70b) multi-turn visa coaching. Returns structured JSON with confidence scores.",
+      "item": [
+        {
+          "name": "Start Session — Why Study in USA?",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/chat/message", "host": ["{{api_v1}}"], "path": ["chat", "message"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"demo-session-001\",\n  \"topic_id\": \"purpose_of_study\",\n  \"message\": \"I want to study Computer Science at Georgia Tech for 2 years to become an ML engineer.\",\n  \"intent\": \"answer\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "intent=answer → visa officer mode. Returns confidence_score, strengths, weaknesses."
+          },
+          "response": [
+            {
+              "name": "200 OK — officer feedback",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Specific program and career goal stated clearly. Strong start.\",\n  \"confidence_score\": 78,\n  \"strengths\": [\"specific institution named\", \"clear career goal\"],\n  \"weaknesses\": [\"funding source not mentioned\"],\n  \"suggested_improvement\": \"Mention who is funding your education and your plan to return home.\",\n  \"tip\": null,\n  \"topic_progress\": 60,\n  \"is_topic_complete\": false\n}"
+            }
+          ]
+        },
+        {
+          "name": "Follow-up — Funding Details",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/chat/message", "host": ["{{api_v1}}"], "path": ["chat", "message"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"demo-session-001\",\n  \"topic_id\": \"financial_support\",\n  \"message\": \"My father is funding my education. He has $120,000 in his savings account and I have a scholarship covering 30% of tuition.\",\n  \"intent\": \"answer\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Specific amounts + scholarship = should score 85+."
+          }
+        },
+        {
+          "name": "Request Coaching Help",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/chat/message", "host": ["{{api_v1}}"], "path": ["chat", "message"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"demo-session-002\",\n  \"topic_id\": \"ties_to_home\",\n  \"message\": \"How should I answer questions about returning home after graduation?\",\n  \"intent\": \"help\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "intent=help → coaching mode. Returns tip instead of score."
+          }
+        },
+        {
+          "name": "Reset Session",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/chat/reset", "host": ["{{api_v1}}"], "path": ["chat", "reset"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"demo-session-001\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Clears conversation memory for a session."
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🏫 University Q&A (RAG)",
+      "description": "FAISS + HuggingFace embeddings (local, no API key) + Groq LLM. RAG over 31 university/visa documents.",
+      "item": [
+        {
+          "name": "Ask — MIT Tuition",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/university-qa/ask", "host": ["{{api_v1}}"], "path": ["university-qa", "ask"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What is the tuition fee at MIT for CS MS program?\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "First call may take 5–10s (FAISS index builds once in memory). Subsequent calls cached."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"answer\": \"MIT CS MS tuition is approximately $60,000 per year. The program is located in Cambridge, MA with an acceptance rate of ~4%. TOEFL 100+ or IELTS 7.5+ required.\",\n  \"sources\": [\"MIT CS MS tuition ~$60,000/year. Cambridge MA. Acceptance rate ~4%...\"],\n  \"confidence\": \"high\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Ask — F-1 Visa Requirements",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/university-qa/ask", "host": ["{{api_v1}}"], "path": ["university-qa", "ask"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What documents do I need for a US F-1 student visa?\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Ask — Germany vs USA ROI",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/university-qa/ask", "host": ["{{api_v1}}"], "path": ["university-qa", "ask"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Compare ROI of studying CS in Germany vs USA. Which is better financially?\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Tests multi-document retrieval — Germany (820% ROI) vs USA (580% ROI) docs."
+          }
+        },
+        {
+          "name": "Ask — Scholarships for Indian Students",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/university-qa/ask", "host": ["{{api_v1}}"], "path": ["university-qa", "ask"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What scholarships are available for Indian students going abroad for CS?\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Should retrieve Fulbright-Nehru, DAAD, Chevening, Erasmus Mundus from RAG docs."
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🔬 Skill Gap Analyzer",
+      "description": "NLP-based resume skill extraction + gap analysis for target role/country.",
+      "item": [
+        {
+          "name": "Analyze — Data Scientist USA",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/skill-gap/analyze", "host": ["{{api_v1}}"], "path": ["skill-gap", "analyze"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resume_text\": \"Python developer with 3 years experience. Proficient in pandas, numpy, scikit-learn, and SQL. Built dashboards using Tableau. Some exposure to machine learning and AWS.\",\n  \"target_role\": \"data scientist\",\n  \"target_country\": \"USA\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Should detect Python, Data Analysis, ML/AI, Cloud, SQL. Missing: Deep Learning, Spark."
+          }
+        },
+        {
+          "name": "Analyze — ML Engineer USA (Strong Profile)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/skill-gap/analyze", "host": ["{{api_v1}}"], "path": ["skill-gap", "analyze"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resume_text\": \"5 years experience in ML engineering. PyTorch, TensorFlow, CUDA, MLOps, Kubernetes, Docker, AWS SageMaker, Hugging Face transformers, LLM fine-tuning, distributed training, Spark, Kafka.\",\n  \"target_role\": \"ml engineer\",\n  \"target_country\": \"USA\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Strong profile — should show minimal gaps."
+          }
+        },
+        {
+          "name": "Analyze — Software Engineer Germany",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/skill-gap/analyze", "host": ["{{api_v1}}"], "path": ["skill-gap", "analyze"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resume_text\": \"Java backend developer. Spring Boot, REST APIs, PostgreSQL, Git, Jenkins. 2 years experience.\",\n  \"target_role\": \"software engineer\",\n  \"target_country\": \"Germany\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Germany profile — should recommend C++, ROS, Embedded, AUTOSAR."
+          }
+        },
+        {
+          "name": "❌ Validation — Missing resume_text (422)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{api_v1}}/skill-gap/analyze", "host": ["{{api_v1}}"], "path": ["skill-gap", "analyze"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"target_role\": \"data scientist\",\n  \"target_country\": \"USA\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        }
+      ]
+    }
+
+  ]
+}
